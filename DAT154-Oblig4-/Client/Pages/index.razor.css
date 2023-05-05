@@ -1,0 +1,40 @@
+﻿.button-box {
+    display: flex;
+    flex-direction: column;
+    margin: 5px;
+    text-align:center;
+}
+
+.button {
+    color: white;
+    flex: 1;
+    margin: 10px;
+    height: 5rem;
+    width: 100%;
+    background: linear-gradient(#092464, #3a0647);
+}
+
+.oi {
+    width: 2rem;
+    font-size: 1.1rem;
+    vertical-align: text-top;
+    top: -2px;
+}
+
+@media (min-width: 641px) {
+    .button-box {
+        display: flex;
+        margin: 5px;
+        flex-direction: row;
+    }
+
+    .button {
+        color: white;
+        flex: 1;
+        margin: 10px;
+        height: 5rem;
+        width: 10rem;
+        background: linear-gradient(#092464, #3a0647);
+    }
+}
+

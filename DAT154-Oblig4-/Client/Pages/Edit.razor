@@ -1,0 +1,99 @@
+﻿@page "/edit"
+@page "/edit/{id}"
+@using System.Net.Http
+@inject HttpClient Http
+@using System.Net.Http.Json
+@using System.ComponentModel.DataAnnotations;
+@using Microsoft.AspNetCore.Components.Forms
+
+@using DAT154_Oblig4_.Shared;
+
+@if (task != null)
+{
+
+    <EditForm EditContext="@editContext" OnValidSubmit="@HandleSubmit">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+        <button class="btn btn-primary info-elem" type="submit">
+            <span class="oi oi-cloud-upload" aria-hidden="true"></span> Save
+        </button>
+
+        <div class="info-box">
+            <div class="info-elem">
+                <div class="info-header">Id: </div>
+                <div>@taskVal.Id</div>
+            </div>
+            <div class="info-elem">
+                <div class="info-header">Date:</div>
+                <InputDate id="date" @bind-Value="taskVal.Date" />
+            </div>
+            <div class="info-elem">
+                <div class="info-header">Type: </div>
+                <InputText id="type" @bind-Value="taskVal.Type" />
+            </div>
+            <div class="info-elem">
+                <div class="info-header">Room: </div>
+                <InputNumber id="RoomId" @bind-Value="taskVal.RoomId"/>
+            </div>
+            <div class="info-elem">
+                <div class="info-header">Staff: </div>
+                <InputNumber id="StaffId" @bind-Value="taskVal.StaffId" />
+            </div>
+            <div class="info-elem">
+                <div class="info-header">Status: </div>
+                <InputText id="status" @bind-Value="taskVal.Status" />
+            </div>
+        
+        </div>
+        <div class="info-header">Note: </div>
+        <InputTextArea style="width: 100%; height:100%" id="note" @bind-Value="taskVal.Note" />
+    </EditForm>
+}
+
+
+@code {
+    [Parameter]
+    public String? Id { get; set; } = "";
+
+    protected override void OnParametersSet()
+    {
+        Id = Id ?? "";
+        base.OnParametersSet();
+    }
+    private TaskValidation taskVal = new(); 
+    private EditContext? editContext;
+
+    private async Task HandleSubmit()
+    {
+        if (editContext != null && editContext.Validate())
+        {
+            try
+            {
+                await Http.PutAsJsonAsync($"http://localhost:5292/api/task/{taskVal.Id.ToString()}", taskVal);
+            } catch (Exception)
+            {
+                throw;
+            }
+        }
+    }
+
+    private Task_db? task;
+    protected override async Task OnInitializedAsync()
+    {
+        task = await Http.GetFromJsonAsync<Task_db>($"http://localhost:5292/api/task/{Id.ToString()}");
+        if (task != null)
+        {
+            taskVal.Id = task.Id;
+            taskVal.Date = task.Date;
+            taskVal.Status = task.Status;
+            taskVal.Type = task.Type;
+            taskVal.Note = task.Note;
+            taskVal.RoomId = task.RoomId;
+            taskVal.StaffId = task.StaffId;
+        }
+
+        editContext = new(taskVal);
+
+    }
+
+}

@@ -1,0 +1,49 @@
+﻿body {
+}
+
+.info-box {
+    display: flex;
+    justify-content: space-between;
+    flex-flow: row wrap;
+}
+
+.info-box .info-elem {
+    width: 50%;
+}
+
+.info-elem {
+    flex-direction: row;
+}
+
+.info-header {
+    font-weight: bold;
+}
+
+.info-value {
+}
+
+@media (min-width: 930px) {
+    body {
+    }
+
+    .info-box {
+        display: flex;
+        justify-content: space-between;
+        flex-flow: row wrap;
+    }
+
+        .info-box .info-elem {
+            width: 32%;
+        }
+
+    .info-elem {
+        flex-direction: row;
+    }
+
+    .info-header {
+        font-weight: bold;
+    }
+
+    .info-value {
+    }
+}

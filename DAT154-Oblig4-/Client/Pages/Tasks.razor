@@ -1,0 +1,77 @@
+﻿@page "/tasks"
+@page "/tasks/{staffType}"
+@using System.Net.Http
+@inject HttpClient Http
+@using System.Net.Http.Json
+@using DAT154_Oblig4_.Shared;
+
+
+@if (tasks == null)
+{
+    <p>No tasks were found</p>
+}
+else
+{
+    <InputSelect @bind-Value="StaffType">
+        <option value="All">Select Type</option>
+        <option value="All">All</option>
+        <option value="Cleaning">Cleaning</option>
+        <option value="Maitenance">Maitenance</option>
+        <option value="Service">Service</option>
+    </InputSelect>
+
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th>Link</th>
+                <th>Task</th>
+                <th>Date</th>
+                <th>Type</th>
+                <th>Note</th>
+                <th>Room</th>
+                <th>Staff</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var task in tasks)
+            {
+                @if (task.Type == StaffType || StaffType == "All"){
+                    <tr>
+                        <td><NavLink class="nav-link" href="@($"edit/{task.Id}")"><span class="oi oi-document" aria-hidden="true"></span></NavLink></td>
+                        <td>@task.Id</td>
+                        <td>@task.Date</td>
+                        <td>@task.Type</td>
+                        @if (task.Note != null && task.Note.Length < 20)
+                        {
+                            <td>@task.Note</td>
+                        } 
+                        else 
+                        {
+                            <td>Note to long</td>
+                        }
+                        <td>@task.Room</td>
+                        <td>@task.StaffId</td>
+                        <td>@task.Status</td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    [Parameter]
+    public String? StaffType { get; set; }
+    protected override void OnParametersSet()
+    {
+        StaffType = StaffType ?? "All";
+        base.OnParametersSet();
+    }
+    private List<Task_db>? tasks;
+
+    protected override async Task OnInitializedAsync() =>
+        tasks = await Http.GetFromJsonAsync<List<Task_db>>("http://localhost:5292/api/task");
+    
+    
+}
